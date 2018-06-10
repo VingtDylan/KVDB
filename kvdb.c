@@ -35,8 +35,8 @@ static int unsafe_open(kvdb_t *db,const char *filename){
    if((db->fp=fopen(filename,"a+"))==NULL){
       EXIT_ERR("unsafe open");
    }
-   lock_init(db->fp->_fileno);
-   set_lock(db->fp->_fileno);
+   RDLCK_init(db->fp->_fileno);
+   WRLCK_init(db->fp->_fileno);
    return 0;
 }
 
