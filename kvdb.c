@@ -6,9 +6,20 @@
 #include <sys/file.h>
 #include <unistd.h>
 
-//static char key[LENGTH];
-//static char value[LENGTH];
-//static char input[LENGTH];
+//static char _key[LENGTH];
+//static char _value[LENGTH];
+
+static void RDLCK_init(int fd);
+static void WRLCK_init(int fd);
+static void FILE_unlock(int fd);
+static int unsafe_open(kvdb_t *db,const char *filename);
+static int unsafe_close(kvdb_t *db);
+static int unsafe_put(kvdb_t *db,const char *key,const char *value);
+static char *unsafe_get(kvdb_t *db,const char *key);
+int kvdb_open(kvdb_t *db, const char *filename);
+int kvdb_close(kvdb_t *db);
+int kvdb_put(kvdb_t *db, const char *key, const char *value);
+char *kvdb_get(kvdb_t *db, const char *key); 
 
 static void RDLCK_init(int fd){
   struct flock locked;
@@ -50,7 +61,7 @@ static int unsafe_open(kvdb_t *db,const char *filename){
    return 0;
 }
 
-int kvdb_open(kvdb_t *db, const char *filename) {
+int kvdb_open(kvdb_t *db, const char *filename){
   // BUG: no error checking
   //db->fp = fopen(filename, "a+");
   //return 0 
@@ -74,7 +85,7 @@ static int unsafe_close(kvdb_t *db){
   return 0;
 }
 
-int kvdb_close(kvdb_t *db) {
+int kvdb_close(kvdb_t *db){
   // BUG: no error checking
   //fclose(db->fp);
   //return 0;
@@ -98,7 +109,7 @@ static int unsafe_put(kvdb_t *db,const char *key,const char *value){
   return 0;
 }
 
-int kvdb_put(kvdb_t *db, const char *key, const char *value) {
+int kvdb_put(kvdb_t *db, const char *key, const char *value){
   // BUG: no error checking
   //fseek(db->fp, 0, SEEK_END);
   //fwrite(key,   1, strlen(key),   db->fp);
@@ -133,7 +144,7 @@ static char *unsafe_get(kvdb_t *db,const char *key){
   return ret;
 }
 
-char *kvdb_get(kvdb_t *db, const char *key) {
+char *kvdb_get(kvdb_t *db, const char *key){
   // BUG: no error checking
   //static char _key[1 << 20], _value[1 << 20];
   //char *ret = NULL;
