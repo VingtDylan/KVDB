@@ -25,6 +25,7 @@ int main() {
             case 4:printf(BROWN);  break;  
      }  
      kvdb_put(&db,test,str);
+     printf("tmpstr:%s\n",str);
      str[i] = symbol[c];
      str[i+1] = '\0';  
   }  
