@@ -1,8 +1,6 @@
 #include "kvdb.h"
 #include <stdlib.h>
 
-#define M 100
-
 int main() {
   kvdb_t db;
   const char *key = "operating-systems";
@@ -15,7 +13,7 @@ int main() {
   char str[M] = {0};  
   int i = 0;  
   char symbol[4] = {'|','/','-','\\'};  
-  for(i = 0; i<M; ++i){  
+  while(i<M){  
       int c = i%5;  
       switch(c){  
             case 0:printf(RED);    break;  
