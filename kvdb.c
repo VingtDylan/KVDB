@@ -89,7 +89,7 @@ int kvdb_close(kvdb_t *db) {
 }
 
 static int unsafe_put(kvdb_t *db,const char *key,const char *value){
-  fseek(db->fp, 0, SEEK_END,      db->fp);
+  fseek(db->fp, 0, SEEK_END);
   fwrite(key,   1, strlen(key),   db->fp); 
   fwrite("\n",  1, 1,             db->fp);
   fwrite(value, 1, strlen(value), db->fp);
