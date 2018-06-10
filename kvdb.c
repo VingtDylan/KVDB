@@ -65,6 +65,14 @@ int kvdb_open(kvdb_t *db, const char *filename) {
   return ret;
 }
 
+static unsafe_close(kvdb_t *db){
+  unlock(db->fp->_fileno);
+  if(fclose(db->fp)!=0){
+     EXIT_ERR("unsafe close");
+  }
+  return 0;
+}
+
 int kvdb_close(kvdb_t *db) {
   // BUG: no error checking
   //fclose(db->fp);
