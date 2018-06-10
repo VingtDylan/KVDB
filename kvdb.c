@@ -29,6 +29,15 @@ static void WRLCK_init(int fd){
   fcntl(fd,F_SETLKW,&locked);
 }
 
+static void FILE_unlock(int fd){
+  struct flock locked;
+  locked.l_whence=SEEK_SET;
+  locked.l_len=0;
+  locked.l_start=0;
+  locked.l_type=F_UNLCK;
+  locked.l_pid=getpid();
+  fcntl(fd,F_SETLKW,&locked);
+}
 
 static int unsafe_open(kvdb_t *db,const char *filename){
    strcpy(db->name,filename);
