@@ -13,7 +13,8 @@ int main() {
   char str[M] = {0};  
   int i = 0;  
   char symbol[4] = {'|','/','-','\\'};  
-  while(i<M){  
+  while(1){  
+      if(i==M-1) break;
       int c = i%5;  
       switch(c){  
             case 0:printf(RED);    break;  
