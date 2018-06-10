@@ -30,9 +30,9 @@ int main() {
      i++;
   }  
   value = kvdb_get(&db, key);
-  printf("PRUPLE[%s]: [%s]NONE\n", key, value);
+  printf(PRUPLE"[%s]: [%s]\n"NONE, key, value);
   value = kvdb_get(&db, test);
-  printf("CYAN[%s]: [%s]NONE\n", test, value);
+  printf(CYAN"[%s]: [%s]\n"NONE, test, value);
   free(value);
   return 0;
 }
