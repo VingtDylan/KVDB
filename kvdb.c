@@ -56,19 +56,28 @@ int kvdb_open(kvdb_t *db, const char *filename) {
  
   pthread_mutex_init(&db->mutex,NULL);
   if(pthread_mutex_lock(&db->mutex)!=0){
-      EXIT_ERR("locked");
+      EXIT_ERR("open lock");
   }
   int ret=unsafe_open(db,filename);
   if(pthread_mutex_unlock(&db->mutex)!=0){
-      EXIT_ERR("unlocked");
+      EXIT_ERR("open unlock");
   }
   return ret;
 }
 
 int kvdb_close(kvdb_t *db) {
   // BUG: no error checking
-  fclose(db->fp);
-  return 0;
+  //fclose(db->fp);
+  //return 0;
+
+  if(pthread_mutex_lock(&db->mutex)!=0){
+     EXIT_ERR("close lock");
+  }
+  int ret=unsafe_close(db);
+  if(pthread_mutex_unlock(&db->mutex)!=0){
+     EXIT_ERR("close unlock");
+  }
+  return ret;
 }
 
 int kvdb_put(kvdb_t *db, const char *key, const char *value) {
