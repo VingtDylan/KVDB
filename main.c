@@ -26,6 +26,7 @@ int main() {
      printf("tmpstr:%s\n",str);
      str[i] = symbol[c];
      str[i+1] = '\0';  
+     i++;
   }  
   value = kvdb_get(&db, key);
   printf("[%s]: [%s]\n", key, value);
