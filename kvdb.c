@@ -88,14 +88,31 @@ int kvdb_close(kvdb_t *db) {
   return ret;
 }
 
-int kvdb_put(kvdb_t *db, const char *key, const char *value) {
-  // BUG: no error checking
-  fseek(db->fp, 0, SEEK_END);
-  fwrite(key,   1, strlen(key),   db->fp);
+static int unsafe_put(kvdb_t *db,const char *key,const char *value){
+  fseek(db->fp, 0, SEEK_END,      db->fp);
+  fwrite(key,   1, strlen(key),   db->fp); 
   fwrite("\n",  1, 1,             db->fp);
   fwrite(value, 1, strlen(value), db->fp);
   fwrite("\n",  1, 1,             db->fp);
   return 0;
+}
+
+int kvdb_put(kvdb_t *db, const char *key, const char *value) {
+  // BUG: no error checking
+  //fseek(db->fp, 0, SEEK_END);
+  //fwrite(key,   1, strlen(key),   db->fp);
+  //fwrite("\n",  1, 1,             db->fp);
+  //fwrite(value, 1, strlen(value), db->fp);
+  //fwrite("\n",  1, 1,             db->fp);
+  //return 0;
+  if(pthread_mutex_lock(&db->mutex)!=0){
+     EXIT_ERR("put lock");
+  }
+  int ret=unsafe_put(db,key,value);
+  if(pthread_mutex_unlock(&db->mutex)!=0){
+     EXIT_ERR("put unlock");
+  }
+  return ret;
 }
 
 char *kvdb_get(kvdb_t *db, const char *key) {
