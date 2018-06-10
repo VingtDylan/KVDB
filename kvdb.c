@@ -3,18 +3,41 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <pthread.h>
-
+#include <sys/file.h>
+#include <unistd.h>
 //static char key[LENGTH];
 //static char value[LENGTH];
 //static char input[LENGTH];
 
+static void RDLCK_init(int fd){
+  struct flock locked;
+  locked.l_whence=SEEK_SET;
+  locked.l_len=0;
+  locked.l_start=0;
+  locked.l_type=F_RDLCK;
+  locked.l_pid=getpid();
+  fcntl(fd,F_SETLK,&locked);
+}
+
+static void WRLCK_init(int fd){
+  struct flock locked;
+  locked.l_whence=SEEK_SET;
+  locked.l_len=0;
+  locked.l_start=0;
+  locked.l_type=F_WRLCK;
+  locked.l_pid=getpid();
+  fcntl(fd,F_SETLKW,&locked);
+}
+
+
 static int unsafe_open(kvdb_t *db,const char *filename){
    strcpy(db->name,filename);
-   if((db->fp=fopen(filename,"a+"))=NULL){
+   if((db->fp=fopen(filename,"a+"))==NULL){
       EXIT_ERR("unsafe open");
    }
- 
- 
+   lock_init(db->fp->_fileno);
+   set_lock(db->fp->_fileno);
+   return 0;
 }
 
 int kvdb_open(kvdb_t *db, const char *filename) {
