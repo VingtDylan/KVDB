@@ -3,10 +3,34 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
+//static char key[LENGTH];
+//static char value[LENGTH];
+//static char input[LENGTH];
+
+static int unsafe_open(kvdb_t *db,const char *filename){
+   strcpy(db->name,filename);
+   if((db->fp=fopen(filename,"a+"))=NULL){
+      EXIT_ERR("unsafe open");
+   }
+ 
+ 
+}
+
 int kvdb_open(kvdb_t *db, const char *filename) {
   // BUG: no error checking
-  db->fp = fopen(filename, "a+");
-  return 0;
+  //db->fp = fopen(filename, "a+");
+  //return 0 
+ 
+  pthread_mutex_init(&db->mutex,NULL);
+  if(pthread_mutex_lock(&db->mutex)!=0){
+      EXIT_ERR("locked");
+  }
+  int ret=unsafe_open(db,filename);
+  if(pthread_mutex_unlock(&db->mutex)!=0){
+      EXIT_ERR("unlocked");
+  }
+  return ret;
 }
 
 int kvdb_close(kvdb_t *db) {
