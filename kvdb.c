@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-
+#include <pthread.h>
 
 //static char key[LENGTH];
 //static char value[LENGTH];
